@@ -11,9 +11,9 @@ const UserServiceApiClient = axios.create({
 
 // create export default object
 export default {
-    // create a get user list function with `user` parameters
-    getUserList(user) {
-        return UserServiceApiClient.get('/', { params: user });
+    // create a get users function
+    getUsers() {
+        return UserServiceApiClient.get('/');
     },
 
     // create a get user function with `id` parameters
@@ -30,5 +30,4 @@ export default {
     updateUser(id) {
         return UserServiceApiClient.put(`/${id}`);
     }
-
 };

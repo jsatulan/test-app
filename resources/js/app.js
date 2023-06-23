@@ -7,8 +7,8 @@
 import './bootstrap';
 import { createApp } from 'vue';
 
-//import * as store from store.js
-import * as store from './store.js';
+//import store from store.js
+import store from './store.js';
 
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
