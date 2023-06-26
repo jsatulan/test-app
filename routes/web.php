@@ -23,6 +23,12 @@ Route::prefix('api')->group(function() {
     Route::namespace('\App\Services\User\Controllers')->prefix('/user')->group(function() {
         //create a get route / for UserController@getUser
         Route::get('/', 'UserController@getUser');
+        //create a post route / for UserController@saveUser
+        Route::post('/', 'UserController@saveUser');
+        //create a delete route / that contains {id} for UserController@deleteUser
+        Route::delete('/{id}', 'UserController@deleteUser');
+        //create a put route / that contains {id} and userInfo parameter for UserController@updateUser
+        Route::put('/{id}', 'UserController@updateUser');
     });
 });
 

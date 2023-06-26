@@ -24,14 +24,20 @@
                 <td>{{ user.email }}</td>
                 <td>{{ user.contact_no }}</td>
                 <td>
-                    <button @click="openModal(user)" class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
+                    <button @click="editUserInfo(user)" class="btn btn-warning btn-sm">Edit</button>
+                    <button @click.prevent="deleteUserInfo(user.id)" class="btn btn-danger btn-sm">Delete</button>
                 </td>
                 </tr>
             </tbody>
         </table>
 
-        <user-modal v-if="showModal" @closeModal="closeModal">
+        <user-modal 
+            v-if="showModal" 
+            :selectedUser="selectedUser"
+            @closeModal="closeModal" 
+            @addUser="addUser"
+            @editUser="editUser"
+            >
         </user-modal>
   </div>
 </template>
@@ -48,14 +54,14 @@
         //create an array of objects with the following properties: name, address, email, and contact no
         data() {
             return {
-                userLists: [],
+                userLists: Object.freeze([]),
                 showModal: false,
-                selectedUser: null,
+                selectedUser: {},
             }
         },
         computed: {
             //get the users from the getters
-            ...mapGetters('UserModule', ['users']),
+            ...mapGetters('UserModule', ['users', 'errorMessage']),
         },
         created() {
             //call the fetchUsers method
@@ -63,7 +69,12 @@
         },
         methods: {
             //get the users actions from the store
-            ...mapActions('UserModule', ['getUsers']),
+            ...mapActions('UserModule', [
+                'getUsers', 
+                'saveUser', 
+                'deleteUser',
+                'updateUser'
+            ]),
 
             // create a asyc fetchUsers method that will call the getUsers action
             async fetchUsers() {
@@ -72,10 +83,48 @@
                 //set the userLists to the users
                 this.userLists = this.users;
             },
+
+            // create a addUser method that will call the saveUser action
+            async addUser(userInfo) {
+                //await the saveUser action
+                await this.saveUser(userInfo);
+                //call the fetchUsers method
+                this.fetchUsers();
+                //close the modal
+                this.closeModal();
+            },
+
+            // create a deleteUserInfo method that will call the deleteUser action
+            async deleteUserInfo(userId) {
+                //await the deleteUser action
+                await this.deleteUser(userId);
+                //check errorMessage if it is not empty, add alert message
+                (this.errorMessage !== '') ? alert(this.errorMessage) : alert('User deleted successfully!');
+                //call the fetchUsers method
+                this.fetchUsers();
+            },
+
+            // create a editUser method that will set the selectedUser to the user
+            editUserInfo(user) {
+                this.selectedUser = user;
+                this.showModal = true;
+            },
+
+            // create a editUser method that will call the updateUser action
+            async editUser(userInfo) {
+                //await the updateUser action
+                await this.updateUser(userInfo);
+                //call the fetchUsers method
+                this.fetchUsers();
+                //close the modal
+                this.closeModal();
+            },
             
             // Emit the 'closeModal' event to the child component
             closeModal() {
                 this.showModal = false;
+                //reset the selectedUser to empty object
+                this.selectedUser = {};
             },
         },
     }

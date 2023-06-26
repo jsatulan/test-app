@@ -21,11 +21,11 @@
                 </div>
                 <div class="form-group mb-3">
                     <label>Contact No.</label>
-                    <input v-model="user.contactNo" type="text" class="form-control" placeholder="enter your contact number">
+                    <input v-model="user.contact_no" type="text" class="form-control" placeholder="enter your contact number">
                 </div>
                 <div class="form-group">
-                    <button @click="closeModal" type="button" class="btn btn-secondary btn-sm">Cancel</button>
-                    <button type="button" class="btn btn-primary btn-sm">Save</button>
+                    <button @click="closeModal()" type="button" class="btn btn-secondary btn-sm">Cancel</button>
+                    <button @click.prevent="manageUser()" type="button" class="btn btn-primary btn-sm">Save</button>
                 </div>
             </form>
         </div>
@@ -35,9 +35,9 @@
 <script>
     export default {
         name: 'UserModal',
-        //create a prop named 'user'
+        //create a prop named 'selectedUser'
         props: {
-            user: {
+            selectedUser: {
                 type: Object,
                 required: true
             }
@@ -46,17 +46,44 @@
         data() {
             return {
                 user: {
+                    id: '',
                     name: '',
                     address: '',
                     email: '',
-                    contactNo: '',
+                    contact_no: '',
                 }
+            }
+        },
+        //create a mounted hook that will pass the selectedUser to the user data
+        mounted() {
+            //check if the selectedUser is not null
+            if (this.selectedUser) {
+                this.user = this.selectedUser;
+            }
+        },
+        //create a before destroy hook that will reset the user data
+        beforeDestroy() {
+            this.user = {
+                id: '',
+                name: '',
+                address: '',
+                email: '',
+                contact_no: '',
             }
         },
         methods: {
             // Emit the 'closeModal' event to the parent component
             closeModal() {
                 this.$emit('closeModal');   
+            },
+            // Emit the 'addUser' event to the parent component if the user id is null
+            // Emit the 'editUser' event to the parent component if the user id is not null
+            manageUser() {
+                //check if the user id is not null
+                let actionName = (this.user.id) ? 'editUser' : 'addUser';
+
+                this.$emit(actionName, this.user);
+                this.closeModal();
             }
         },
     }
