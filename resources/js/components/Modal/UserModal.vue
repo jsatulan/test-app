@@ -58,7 +58,7 @@
         mounted() {
             //check if the selectedUser is not null
             if (this.selectedUser) {
-                this.user = this.selectedUser;
+                this.user = JSON.parse(JSON.stringify(this.selectedUser));
             }
         },
         //create a before destroy hook that will reset the user data
