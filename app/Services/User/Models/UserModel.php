@@ -18,12 +18,12 @@ class UserModel extends Model
     //create protected $table = 'user'
     protected $table = 'user';
 
-    //create protected $fillable = ['user_name', 'address', 'email', 'contact']
+    //create protected $fillable = ['name', 'address', 'email', 'contact_no']
     protected $fillable = [
-        'user_name',
+        'name',
         'address',
         'email',
-        'contact',
+        'contact_no',
     ];
 
     //create protected $hidden = ['created_at', 'updated_at']
@@ -36,5 +36,23 @@ class UserModel extends Model
     public function getUsers()
     {
         return $this->all()->toArray();
+    }
+
+    // create function saveUser to save user
+    public function saveUser($userInfo)
+    {
+        return $this->create($userInfo);
+    }
+
+    // create function deleteUser to delete user
+    public function deleteUser($id)
+    {
+        return $this->where('id', $id)->delete();
+    }
+
+    // create function updateUser to update user
+    public function updateUser($id, $userInfo)
+    {
+        return $this->where('id', $id)->update($userInfo);
     }
 }
